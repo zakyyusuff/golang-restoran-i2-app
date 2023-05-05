@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -14,7 +15,9 @@ func DBinstance() *mongo.Client {
 	// MongoDb := "mongodb://localhost:27017"
 	// MongoDb := "mongodb+srv://zakymuhammadyusuf:zaky123@zaky.oy6yt60.mongodb.net/?retryWrites=true&w=majority"
 	// MongoDb := "mongodb+srv://zakymuhammadyusuf:zaky123@zaky.oy6yt60.mongodb.net/test"
-	MongoDb := "mongodb+srv://zakymuhammadyusuf:zaky123@zaky.oy6yt60.mongodb.net/restaurant"
+	// MongoDb := "mongodb+srv://zakymuhammadyusuf:zaky123@zaky.oy6yt60.mongodb.net/restaurant"
+	os.Setenv("restaurant", "mongodb+srv://zakymuhammadyusuf:zaky123@zaky.oy6yt60.mongodb.net/")
+	MongoDb := os.Getenv("restaurant")
 	fmt.Print(MongoDb)
 
 	client, err := mongo.NewClient(options.Client().ApplyURI(MongoDb))
