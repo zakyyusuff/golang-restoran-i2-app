@@ -1,1 +1,1 @@
-web: golang-restoran-i2-app
+web: golang-restoran-i2-app 103.153.40.98:8080
