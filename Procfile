@@ -1,1 +1,1 @@
-web: go-getting-started
+main: bin/golang-restoran-i2-app
