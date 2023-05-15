@@ -1,1 +1,1 @@
-main: bin/golang-restoran-i2-app
+web: bin/golang-restoran-i2-app
