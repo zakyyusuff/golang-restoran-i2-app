@@ -1,1 +1,1 @@
-web: bin/golang-restoran-i2-app
+web: gunicorn -w 4 -b 0.0.0.0:$PORT -k gevent main:app
