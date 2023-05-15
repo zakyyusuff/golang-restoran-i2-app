@@ -1,1 +1,1 @@
-web: golang-restoran-i2-app 4 -b 0.0.0.0:$PORT
+main: bin/golang-restoran-i2-app 4 -b 0.0.0.0:$PORT
