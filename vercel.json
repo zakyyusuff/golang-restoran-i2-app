@@ -11,6 +11,11 @@
         "src": "/(.*)",
         "dest": "/main.go"
       }
-    ]
+    ],
+    "functions": {
+      "api/main": {
+        "runtime": "@vercel/go"
+      }
+    }
   }
   
