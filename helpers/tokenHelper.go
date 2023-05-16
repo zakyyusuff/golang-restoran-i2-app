@@ -121,3 +121,110 @@ func ValidateToken(signedToken string) (claims *SignedDetails, msg string) {
 	return claims, msg
 
 }
+
+/////////////////////////////////////////////////////////////////////////////// mysql helper
+
+// package helper
+
+// import (
+// 	"database/sql"
+// 	"fmt"
+// 	"log"
+// 	"time"
+
+// 	jwt "github.com/dgrijalva/jwt-go"
+// 	_ "github.com/go-sql-driver/mysql"
+// )
+
+// type SignedDetails struct {
+// 	Email      string
+// 	First_name string
+// 	Last_name  string
+// 	Uid        string
+// 	jwt.StandardClaims
+// }
+
+// var db *sql.DB
+
+// func init() {
+// 	// Koneksi ke MySQL
+// 	var err error
+// 	db, err = sql.Open("mysql", "user:password@tcp(localhost:3306)/database_name")
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+// }
+
+// func GenerateAllTokens(email string, firstName string, lastName string, uid string) (signedToken string, signedRefreshToken string, err error) {
+// 	claims := &SignedDetails{
+// 		Email:      email,
+// 		First_name: firstName,
+// 		Last_name:  lastName,
+// 		Uid:        uid,
+// 		StandardClaims: jwt.StandardClaims{
+// 			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(24)).Unix(),
+// 		},
+// 	}
+
+// 	refreshClaims := &SignedDetails{
+// 		StandardClaims: jwt.StandardClaims{
+// 			ExpiresAt: time.Now().Local().Add(time.Hour * time.Duration(168)).Unix(),
+// 		},
+// 	}
+
+// 	token, err := jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString([]byte(SECRET_KEY))
+// 	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString([]byte(SECRET_KEY))
+
+// 	if err != nil {
+// 		log.Panic(err)
+// 		return
+// 	}
+
+// 	return token, refreshToken, err
+
+// }
+
+// func UpdateAllTokens(signedToken string, signedRefreshToken string, userId string) {
+// 	var updateObj = map[string]interface{}{
+// 		"token":         signedToken,
+// 		"refresh_token": signedRefreshToken,
+// 		"updated_at":    time.Now().Format(time.RFC3339),
+// 	}
+
+// 	query := "UPDATE user SET token = :token, refresh_token = :refresh_token, updated_at = :updated_at WHERE user_id = :user_id"
+// 	_, err := db.Exec(query, updateObj)
+
+// 	if err != nil {
+// 		log.Panic(err)
+// 		return
+// 	}
+// 	return
+// }
+
+// func ValidateToken(signedToken string) (claims *SignedDetails, msg string) {
+// 	token, err := jwt.ParseWithClaims(
+// 		signedToken,
+// 		&SignedDetails{},
+// 		func(token *jwt.Token) (interface{}, error) {
+// 			return []byte(SECRET_KEY), nil
+// 		},
+// 	)
+
+// 	if err != nil {
+// 		msg = fmt.Sprintf("the token is invalid: %s", err.Error())
+// 		return
+// 	}
+
+// 	claims, ok := token.Claims.(*SignedDetails)
+// 	if !ok {
+// 		msg = fmt.Sprintf("the token is invalid")
+// 		return
+// 	}
+
+// 	if claims.ExpiresAt < time.Now().Unix() {
+// 		msg = fmt.Sprint("token is expired")
+// 		return
+// 	}
+
+// 	return claims, msg
+// }

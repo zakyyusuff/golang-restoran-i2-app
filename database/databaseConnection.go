@@ -44,3 +44,41 @@ func OpenCollection(client *mongo.Client, collectionName string) *mongo.Collecti
 
 	return collection
 }
+
+////////////////////////////////////////////////////////////////////////////// mysql
+
+// package database
+
+// import (
+// 	"database/sql"
+// 	"fmt"
+// 	"log"
+// 	"time"
+
+// 	_ "github.com/go-sql-driver/mysql"
+// )
+
+// func DBinstance() *sql.DB {
+// 	DBURL := ":3306/restoran"
+
+// 	db, err := sql.Open("mysql", DBURL)
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+
+// 	// Atur timeout koneksi
+// 	db.SetConnMaxLifetime(5 * time.Minute)
+// 	db.SetMaxOpenConns(10)
+// 	db.SetMaxIdleConns(5)
+
+// 	// Tes koneksi
+// 	err = db.Ping()
+// 	if err != nil {
+// 		log.Fatal(err)
+// 	}
+
+// 	fmt.Println("Connected to MySQL")
+// 	return db
+// }
+
+// var DB *sql.DB = DBinstance()
