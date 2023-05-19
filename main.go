@@ -67,7 +67,7 @@ func main() {
 	// port := os.Getenv(clientOptions)
 
 	port := os.Getenv("PORT")
-	ip := os.Getenv("INTERNALHOST")
+	// ip := os.Getenv("INTERNALHOST")
 
 	// if port == "" {
 	// 	port = "3000"
@@ -85,7 +85,8 @@ func main() {
 	routes.OrderItemRoutes(router)
 	routes.InvoiceRoutes(router)
 
-	router.Run(ip + ":" + port)
+	router.Run(":" + port)
+	// router.Run(ip + ":" + port)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////		2 uji coba
