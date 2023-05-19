@@ -68,9 +68,9 @@ func main() {
 
 	port := os.Getenv("PORT")
 
-	if port == "" {
-		port = "3000"
-	}
+	// if port == "" {
+	// 	port = "3000"
+	// }
 
 	router := gin.Default()
 	router.Use(gin.Logger())
