@@ -1,1 +1,0 @@
-web: ./golang-restoran-i2-app

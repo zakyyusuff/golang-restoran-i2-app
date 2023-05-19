@@ -44,48 +44,48 @@
 // }
 
 // //////////////////////////////////////////////////////////////////////////////////////////		1
-// package main
+package main
 
-// import (
-// 	"fmt"
-// 	"os"
+import (
+	"fmt"
+	"os"
 
-// 	middleware "golang-restaurant-management/middleware"
-// 	routes "golang-restaurant-management/routes"
+	middleware "golang-restaurant-management/middleware"
+	routes "golang-restaurant-management/routes"
 
-// 	"github.com/gin-gonic/gin"
-// )
+	"github.com/gin-gonic/gin"
+)
 
-// // var foodCollection *mongo.Collection = database.OpenCollection(database.Client, "food")
+// var foodCollection *mongo.Collection = database.OpenCollection(database.Client, "food")
 
-// func main() {
-// 	fmt.Println("Server is running...")
-// 	os.Setenv("restaurant", "mongodb+srv://zakymuhammadyusuf:zaky123@zaky.oy6yt60.mongodb.net/")
-// 	// url := os.Getenv("restaurant")
-// 	// clientOptions := options.Client().ApplyURI(url)
-// 	// client, err := mongo.Connect(context.TODO(), clientOptions)
-// 	// port := os.Getenv(clientOptions)
+func main() {
+	fmt.Println("Server is running...")
+	os.Setenv("restaurant", "mongodb+srv://zakymuhammadyusuf:zaky123@zaky.oy6yt60.mongodb.net/")
+	// url := os.Getenv("restaurant")
+	// clientOptions := options.Client().ApplyURI(url)
+	// client, err := mongo.Connect(context.TODO(), clientOptions)
+	// port := os.Getenv(clientOptions)
 
-// 	port := os.Getenv("PORT")
+	port := os.Getenv("PORT")
 
-// 	if port == "" {
-// 		port = "8000"
-// 	}
+	if port == "" {
+		port = "8000"
+	}
 
-// 	router := gin.Default()
-// 	router.Use(gin.Logger())
-// 	routes.UserRoutes(router)
-// 	router.Use(middleware.Authentication())
+	router := gin.Default()
+	router.Use(gin.Logger())
+	routes.UserRoutes(router)
+	router.Use(middleware.Authentication())
 
-// 	routes.FoodRoutes(router)
-// 	routes.MenuRoutes(router)
-// 	routes.TableRoutes(router)
-// 	routes.OrderRoutes(router)
-// 	routes.OrderItemRoutes(router)
-// 	routes.InvoiceRoutes(router)
+	routes.FoodRoutes(router)
+	routes.MenuRoutes(router)
+	routes.TableRoutes(router)
+	routes.OrderRoutes(router)
+	routes.OrderItemRoutes(router)
+	routes.InvoiceRoutes(router)
 
-// 	router.Run(":" + port)
-// }
+	router.Run(":" + port)
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////		2 uji coba
 
@@ -196,33 +196,33 @@
 // }
 //////////////////////////////////////////////////////////
 
-package main
+// package main
 
-import (
-	"fmt"
-	"os"
+// import (
+// 	"fmt"
+// 	"os"
 
-	"github.com/gin-gonic/gin"
-)
+// 	"github.com/gin-gonic/gin"
+// )
 
-func main() {
-	fmt.Println("Server is running...")
+// func main() {
+// 	fmt.Println("Server is running...")
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "3000"
-	}
+// 	port := os.Getenv("PORT")
+// 	if port == "" {
+// 		port = "8000"
+// 	}
 
-	router := gin.New()
-	router.Use(gin.Logger())
+// 	router := gin.New()
+// 	router.Use(gin.Logger())
 
-	router.GET("/", Handler)
+// 	router.GET("/", Handler)
 
-	router.Run(":" + port)
-}
+// 	router.Run(":" + port)
+// }
 
-func Handler(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "Hello From Vercel !!!",
-	})
-}
+// func Handler(c *gin.Context) {
+// 	c.JSON(200, gin.H{
+// 		"message": "Hello From Vercel !!!",
+// 	})
+// }
