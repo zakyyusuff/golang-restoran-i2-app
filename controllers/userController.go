@@ -11,6 +11,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/aiteung/musik"
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -22,7 +23,7 @@ var userCollection *mongo.Collection = database.OpenCollection(database.Client, 
 
 func GetIp() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, "Halo")
+		ctx.JSON(http.StatusOK, musik.GetIPaddress())
 	}
 
 }
