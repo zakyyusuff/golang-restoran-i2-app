@@ -151,7 +151,7 @@ import (
 func main() {
 	fmt.Println("Server is running...")
 	os.Setenv("restaurant", "mongodb+srv://zakymuhammadyusuf:zaky123@zaky.oy6yt60.mongodb.net/")
-	port := "8000"
+	port := os.Getenv("PORT")
 
 	router := gin.Default()
 
