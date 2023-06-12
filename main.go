@@ -178,7 +178,6 @@ func main() {
 	routes.OrderRoutes(router)
 	routes.OrderItemRoutes(router)
 	routes.InvoiceRoutes(router)
-
 	router.Run(":" + port)
 }
 
