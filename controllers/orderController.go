@@ -19,6 +19,7 @@ import (
 
 var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 
+var menuCol *mongo.Collection = database.OpenCollection(database.Client, "menu")
 var orderCollection *mongo.Collection = database.OpenCollection(database.Client, "order")
 
 func GetOrders() gin.HandlerFunc {
@@ -186,7 +187,7 @@ func UpdateOrder() gin.HandlerFunc {
 			ctx,
 			filter,
 			bson.D{
-				{"$st", updateObj},
+				{"$set", updateObj},
 			},
 			&opt,
 		)

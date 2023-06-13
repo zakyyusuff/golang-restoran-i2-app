@@ -40,7 +40,9 @@ func GetMenu() gin.HandlerFunc {
 		menuId := c.Param("menu_id")
 		var menu models.Menu
 
-		err := foodCollection.FindOne(ctx, bson.M{"menu_id": menuId}).Decode(&menu)
+		// err := foodCollection.FindOne(ctx, bson.M{"menu_id": menuId}).Decode(&menu)
+		err := menuCollection.FindOne(ctx, bson.M{"menu_id": menuId}).Decode(&menu)
+
 		defer cancel()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while fetching the menu"})
@@ -82,9 +84,93 @@ func CreateMenu() gin.HandlerFunc {
 	}
 }
 
+// func inTimeSpan(start, end, check time.Time) bool {
+// 	return start.After(time.Now()) && end.After(start)
+// }
+
 func inTimeSpan(start, end, check time.Time) bool {
-	return start.After(time.Now()) && end.After(start)
+	return check.After(start) && check.Before(end) || check.Equal(start) || check.Equal(end)
 }
+
+// func UpdateMenu() gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+// 		var menu models.Menu
+
+// 		if err := c.BindJSON(&menu); err != nil {
+// 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 			return
+// 		}
+
+// 		menuId := c.Param("menu_id")
+// 		filter := bson.M{"menu_id": menuId}
+
+// 		var updateObj primitive.D
+
+// 		// if menu.Start_Date != nil && menu.End_Date != nil {
+// 		// 	if !inTimeSpan(*menu.Start_Date, *menu.End_Date, time.Now()) {
+// 		// 		msg := "kindly retype the time"
+// 		// 		c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+// 		// 		defer cancel()
+// 		// 		return
+// 		// 	}
+
+// 		if !menu.Start_Date.IsZero() && !menu.End_Date.IsZero() {
+// 			if !inTimeSpan(*menu.Start_Date, *menu.End_Date, time.Now().UTC()) {
+// 				msg := "kindly retype the time"
+// 				c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+// 				defer cancel()
+// 				return
+// 			}
+
+// 			//script ori
+// 			updateObj = append(updateObj, bson.E{"start_date", menu.Start_Date})
+// 			updateObj = append(updateObj, bson.E{"end_date", menu.End_Date})
+
+// 			// if menu.Name != "" {
+// 			// 	updateObj = append(updateObj, bson.E{"name", menu.Name})
+// 			// }
+// 			// if menu.Category != "" {
+// 			// 	updateObj = append(updateObj, bson.E{"name", menu.Category})
+// 			// }
+
+// 			if menu.Name != "" {
+// 				updateObj = append(updateObj, bson.E{"name", menu.Name})
+// 			}
+// 			if menu.Category != "" {
+// 				updateObj = append(updateObj, bson.E{"category", menu.Category})
+// 			}
+
+// 			menu.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
+// 			updateObj = append(updateObj, bson.E{"updated_at", menu.Updated_at})
+
+// 			upsert := true
+
+// 			opt := options.UpdateOptions{
+// 				Upsert: &upsert,
+// 			}
+
+// 			result, err := menuCollection.UpdateOne(
+// 				ctx,
+// 				filter,
+// 				bson.D{
+// 					{"$set", updateObj},
+// 				},
+// 				&opt,
+// 			)
+
+// 			if err != nil {
+// 				msg := "Menu update failed"
+// 				c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+// 			}
+
+// 			defer cancel()
+// 			c.JSON(http.StatusOK, result)
+// 		}
+// 	}
+// }
+
+/////////////////////////////////////// script func update coba
 
 func UpdateMenu() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -97,53 +183,41 @@ func UpdateMenu() gin.HandlerFunc {
 		}
 
 		menuId := c.Param("menu_id")
-		filter := bson.M{"manuu_id": menuId}
+		filter := bson.M{"menu_id": menuId}
 
 		var updateObj primitive.D
 
-		if menu.Start_Date != nil && menu.End_Date != nil {
-			if !inTimeSpan(*menu.Start_Date, *menu.End_Date, time.Now()) {
-				msg := "kindly retype the time"
-				c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
-				defer cancel()
-				return
-			}
-
-			updateObj = append(updateObj, bson.E{"start_date", menu.Start_Date})
-			updateObj = append(updateObj, bson.E{"end_date", menu.End_Date})
-
-			if menu.Name != "" {
-				updateObj = append(updateObj, bson.E{"name", menu.Name})
-			}
-			if menu.Category != "" {
-				updateObj = append(updateObj, bson.E{"name", menu.Category})
-			}
-
-			menu.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
-			updateObj = append(updateObj, bson.E{"updated_at", menu.Updated_at})
-
-			upsert := true
-
-			opt := options.UpdateOptions{
-				Upsert: &upsert,
-			}
-
-			result, err := menuCollection.UpdateOne(
-				ctx,
-				filter,
-				bson.D{
-					{"$set", updateObj},
-				},
-				&opt,
-			)
-
-			if err != nil {
-				msg := "Menu update failed"
-				c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
-			}
-
-			defer cancel()
-			c.JSON(http.StatusOK, result)
+		if menu.Name != "" {
+			updateObj = append(updateObj, bson.E{"name", menu.Name})
 		}
+		if menu.Category != "" {
+			updateObj = append(updateObj, bson.E{"category", menu.Category})
+		}
+
+		menu.Updated_at = time.Now()
+		updateObj = append(updateObj, bson.E{"updated_at", menu.Updated_at})
+
+		upsert := true
+
+		opt := options.UpdateOptions{
+			Upsert: &upsert,
+		}
+
+		result, err := menuCollection.UpdateOne(
+			ctx,
+			filter,
+			bson.D{
+				{"$set", updateObj},
+			},
+			&opt,
+		)
+
+		if err != nil {
+			msg := "Menu update failed"
+			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+		}
+
+		defer cancel()
+		c.JSON(http.StatusOK, gin.H{"message": "Menu updated", "result": result})
 	}
 }
