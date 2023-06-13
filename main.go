@@ -182,7 +182,7 @@ func main() {
 	router.Run(":" + port)
 }
 
-//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////	script perbaikan local
 
 // package main
 
@@ -190,27 +190,42 @@ func main() {
 // 	"fmt"
 // 	"os"
 
+// 	middleware "golang-restaurant-management/middleware"
+// 	routes "golang-restaurant-management/routes"
+
 // 	"github.com/gin-gonic/gin"
 // )
 
 // func main() {
 // 	fmt.Println("Server is running...")
+// 	os.Setenv("restaurant", "mongodb+srv://zakymuhammadyusuf:zaky123@zaky.oy6yt60.mongodb.net/")
+// 	port := "8000"
 
-// 	port := os.Getenv("PORT")
-// 	if port == "" {
-// 		port = "8000"
-// 	}
+// 	router := gin.Default()
 
-// 	router := gin.New()
+// 	// Menambahkan pengaturan CORS
+// 	router.Use(func(c *gin.Context) {
+// 		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+// 		c.Writer.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, DELETE, OPTIONS")
+// 		c.Writer.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type, Authorization")
+// 		c.Writer.Header().Set("Access-Control-Max-Age", "86400")
+// 		if c.Request.Method == "OPTIONS" {
+// 			c.AbortWithStatus(200)
+// 		} else {
+// 			c.Next()
+// 		}
+// 	})
+
 // 	router.Use(gin.Logger())
+// 	routes.UserRoutes(router)
+// 	router.Use(middleware.Authentication())
 
-// 	router.GET("/", Handler)
+// 	routes.FoodRoutes(router)
+// 	routes.MenuRoutes(router)
+// 	routes.TableRoutes(router)
+// 	routes.OrderRoutes(router)
+// 	routes.OrderItemRoutes(router)
+// 	routes.InvoiceRoutes(router)
 
 // 	router.Run(":" + port)
-// }
-
-// func Handler(c *gin.Context) {
-// 	c.JSON(200, gin.H{
-// 		"message": "Hello From Vercel !!!",
-// 	})
 // }
