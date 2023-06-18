@@ -73,6 +73,52 @@ func GetUsers() gin.HandlerFunc {
 	}
 }
 
+// /////////////////////////////////// script ganti
+// func GetUsers() gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+
+// 		recordPerPage, err := strconv.Atoi(c.Query("recordPerPage"))
+// 		if err != nil || recordPerPage < 1 {
+// 			recordPerPage = 10
+// 		}
+
+// 		page, err1 := strconv.Atoi(c.Query("page"))
+// 		if err1 != nil || page < 1 {
+// 			page = 1
+// 		}
+
+// 		startIndex := (page - 1) * recordPerPage
+// 		startIndex, err = strconv.Atoi(c.Query("startIndex"))
+
+// 		// Gunakan pipeline agregasi untuk mendapatkan item pengguna
+// 		matchStage := bson.D{{"$match", bson.D{{}}}}
+// 		projectStage := bson.D{
+// 			{"$project", bson.D{
+// 				{"_id", 0},
+// 				{"total_count", 1},
+// 				{"user_items", bson.D{{"$slice", []interface{}{"$data", startIndex, recordPerPage}}}},
+// 			}},
+// 		}
+
+// 		result, err := userCollection.Aggregate(ctx, mongo.Pipeline{
+// 			matchStage, projectStage,
+// 		})
+// 		defer cancel()
+// 		if err != nil {
+// 			c.JSON(http.StatusInternalServerError, gin.H{"error": "terjadi kesalahan saat mencantumkan item pengguna"})
+// 			return
+// 		}
+
+// 		var response bson.M
+// 		if err = result.Decode(&response); err != nil {
+// 			log.Fatal(err)
+// 		}
+
+// 		c.JSON(http.StatusOK, response)
+// 	}
+// }
+
 // // File uji coba 1
 // func GetUsers() gin.HandlerFunc {
 // 	return func(c *gin.Context) {
@@ -117,6 +163,29 @@ func GetUsers() gin.HandlerFunc {
 // 		c.JSON(http.StatusOK, allUsers[0]["user_items"])
 // 	}
 // }
+
+// //////////////////////////////////////////////////// script coba DELETE
+func DeleteUser() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		userId := c.Param("user_id")
+
+		// Delete the user by user_id
+		result, err := userCollection.DeleteOne(ctx, bson.M{"user_id": userId})
+		defer cancel()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occurred while deleting the user"})
+			return
+		}
+
+		if result.DeletedCount == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"error": "user not found"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "user deleted successfully"})
+	}
+}
 
 func GetUser() gin.HandlerFunc {
 	return func(c *gin.Context) {

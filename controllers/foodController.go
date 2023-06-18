@@ -194,3 +194,26 @@ func UpdateFood() gin.HandlerFunc {
 		c.JSON(http.StatusOK, result)
 	}
 }
+
+// ////////////////////////////////////////// tambahan delete
+func DeleteFood() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		foodId := c.Param("food_id")
+
+		result, err := foodCollection.DeleteOne(ctx, bson.M{"food_id": foodId})
+		defer cancel()
+
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occurred while deleting the food item"})
+			return
+		}
+
+		if result.DeletedCount == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"error": "food item not found"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "food item deleted successfully"})
+	}
+}

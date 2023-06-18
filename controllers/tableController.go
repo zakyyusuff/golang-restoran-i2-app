@@ -179,6 +179,21 @@ func GetTables() gin.HandlerFunc {
 	}
 }
 
+// func GetTable() gin.HandlerFunc {
+// 	return func(c *gin.Context) {
+// 		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+// 		tableId := c.Param("table_id")
+// 		var table models.Table
+
+// 		err := tableCollection.FindOne(ctx, bson.M{"table_id": tableId}).Decode(&table)
+// 		defer cancel()
+// 		if err != nil {
+// 			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while fetching the tables"})
+// 		}
+// 		c.JSON(http.StatusOK, table)
+// 	}
+// }
+
 func GetTable() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
@@ -188,7 +203,12 @@ func GetTable() gin.HandlerFunc {
 		err := tableCollection.FindOne(ctx, bson.M{"table_id": tableId}).Decode(&table)
 		defer cancel()
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "error occured while fetching the tables"})
+			if err == mongo.ErrNoDocuments {
+				c.JSON(http.StatusNotFound, gin.H{"error": "tabel tidak ditemukan"})
+				return
+			}
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "terjadi kesalahan saat mengambil tabel"})
+			return
 		}
 		c.JSON(http.StatusOK, table)
 	}
@@ -281,5 +301,34 @@ func UpdateTable() gin.HandlerFunc {
 
 		defer cancel()
 		c.JSON(http.StatusOK, result)
+	}
+}
+
+// //////////////////////////////// delete
+func DeleteTable() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		tableID := c.Param("table_id")
+
+		// Create a filter to match the Table_id
+		filter := bson.M{"table_id": tableID}
+
+		// Delete the table
+		result, err := tableCollection.DeleteOne(ctx, filter)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "terjadi kesalahan saat menghapus tabel"})
+			cancel()
+			return
+		}
+
+		// Check the result to determine if the table was deleted
+		if result.DeletedCount == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"error": "tabel tidak ditemukan"})
+			cancel()
+			return
+		}
+
+		defer cancel()
+		c.JSON(http.StatusOK, gin.H{"status": "tabel berhasil dihapus"})
 	}
 }

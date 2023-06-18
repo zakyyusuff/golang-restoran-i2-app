@@ -185,3 +185,23 @@ func UpdateInvoice() gin.HandlerFunc {
 		c.JSON(http.StatusOK, result)
 	}
 }
+
+// //////////////////////// delete
+func DeleteInvoice() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
+		invoiceId := c.Param("invoice_id")
+
+		filter := bson.M{"invoice_id": invoiceId}
+
+		result, err := invoiceCollection.DeleteOne(ctx, filter)
+		defer cancel()
+		if err != nil {
+			log.Println("Error deleting invoice:", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "terjadi kesalahan saat menghapus invoice"})
+			return
+		}
+
+		c.JSON(http.StatusOK, result)
+	}
+}

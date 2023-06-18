@@ -203,6 +203,33 @@ func UpdateOrder() gin.HandlerFunc {
 	}
 }
 
+// //////////////////////// delete order
+func DeleteOrder() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		orderID := c.Param("order_id")
+
+		// Create a filter to match the Order_id
+		filter := bson.M{"order_id": orderID}
+
+		// Delete the order
+		result, err := orderCollection.DeleteOne(ctx, filter)
+		if err != nil {
+			log.Println("Error deleting order:", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "terjadi kesalahan saat menghapus pesanan"})
+			cancel()
+			return
+		}
+
+		// Check the result to determine if the order was deleted
+		if result.DeletedCount == 0 {
+			c.JSON(http.StatusNotFound, gin.H{"error": "pesanan tidak ditemukan"})
+			return
+		}
+
+		c.JSON(http.StatusOK, gin.H{"message": "pesanan berhasil dihapus"})
+	}
+}
+
 func OrderItemOrderCreator(order models.Order) string {
 
 	order.Created_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
