@@ -157,7 +157,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 var tableCollection *mongo.Collection = database.OpenCollection(database.Client, "table")
@@ -277,11 +276,6 @@ func UpdateTable() gin.HandlerFunc {
 
 		table.Updated_at, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 
-		upsert := true
-		opt := options.UpdateOptions{
-			Upsert: &upsert,
-		}
-
 		filter := bson.M{"table_id": tableId}
 
 		result, err := tableCollection.UpdateOne(
@@ -290,7 +284,6 @@ func UpdateTable() gin.HandlerFunc {
 			bson.D{
 				{"$set", updateObj},
 			},
-			&opt,
 		)
 
 		if err != nil {
