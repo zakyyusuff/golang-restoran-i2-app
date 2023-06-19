@@ -119,11 +119,14 @@ func CreateOrder() gin.HandlerFunc {
 
 		tableCollection := database.OpenCollection(database.Client, "table")
 
+		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second) // Tambahkan ini
+
 		if order.Table_id != nil {
-			err := tableCollection.FindOne(context.Background(), bson.M{"table_id": *order.Table_id}).Decode(&table)
+			err := tableCollection.FindOne(ctx, bson.M{"table_id": *order.Table_id}).Decode(&table)
 			if err != nil {
 				msg := fmt.Sprintf("message:Table was not found")
 				c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+				cancel() // Batalkan konteks jika terjadi kesalahan
 				return
 			}
 		}
@@ -139,9 +142,11 @@ func CreateOrder() gin.HandlerFunc {
 		if insertErr != nil {
 			msg := fmt.Sprintf("order item was not created")
 			c.JSON(http.StatusInternalServerError, gin.H{"error": msg})
+			cancel() // Batalkan konteks jika terjadi kesalahan
 			return
 		}
 
+		defer cancel()
 		c.JSON(http.StatusOK, result)
 	}
 }
