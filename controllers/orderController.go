@@ -210,7 +210,10 @@ func DeleteOrder() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		orderID := c.Param("order_id")
 
-		// Create a filter to match the Order_id
+		ctx, cancel := context.WithTimeout(context.Background(), 100*time.Second)
+		defer cancel()
+
+		// Create a filter to match the order_id
 		filter := bson.M{"order_id": orderID}
 
 		// Delete the order
@@ -218,7 +221,6 @@ func DeleteOrder() gin.HandlerFunc {
 		if err != nil {
 			log.Println("Error deleting order:", err)
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "terjadi kesalahan saat menghapus pesanan"})
-			cancel()
 			return
 		}
 
