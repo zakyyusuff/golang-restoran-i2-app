@@ -19,7 +19,7 @@ import (
 
 var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 
-var menuCol *mongo.Collection = database.OpenCollection(database.Client, "menu")
+// var menuCol *mongo.Collection = database.OpenCollection(database.Client, "menu")
 var orderCollection *mongo.Collection = database.OpenCollection(database.Client, "order")
 
 func GetOrders() gin.HandlerFunc {
@@ -206,11 +206,12 @@ func UpdateOrder() gin.HandlerFunc {
 }
 
 // //////////////////////// delete order
+// DeleteOrder handles the deletion of an order
 func DeleteOrder() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		orderID := c.Param("order_id")
 
-		// Create a filter to match the order_id
+		// Create a filter to match the order_id field
 		filter := bson.M{"order_id": orderID}
 
 		// Delete the order
